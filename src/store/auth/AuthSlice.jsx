@@ -1,7 +1,6 @@
 // imports for any of the of services
 import AuthService from "./AuthService";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
+import { createSlice, createAsyncThunk, createSelector } from "@reduxjs/toolkit";
 
 const initialState = {
     user: {
@@ -10,7 +9,11 @@ const initialState = {
         isLoading: false,
         hasError: false,
         errorMessage: null,
+        currentConversationId: null,
+        currentConversation: [],
         prevConversations: [],
+        currentUserMessages: [],
+        currentBotMessages: [],
     }
 }
 
@@ -39,6 +42,15 @@ export const getConversationHistory = createAsyncThunk(
     }
 );
 
+// // Action Types
+// export const UPDATE_CURRENT_CONVERSATION = 'auth/UPDATE_CURRENT_CONVERSATION';
+
+// // Action Creator
+// export const updateCurrentConversation = (conversationData) => ({
+//   type: UPDATE_CURRENT_CONVERSATION,
+//   payload: conversationData,
+// });
+
 // TODO: extraReducers for the builder cases
 export const authSlice = createSlice({
     name: 'auth',
@@ -47,6 +59,15 @@ export const authSlice = createSlice({
         reset: (state) => {
             state.user = initialState.user;
 
+        },
+        setCurrentConversation(state, action) {
+            console.log('Conversation payload: ', action.payload);
+            state.user.currentConversation = action.payload;
+            console.log('Current State Conversation: ', state.user.currentConversation);
+        },
+        setCurrentConversationId(state, action) {
+            state.user.currentConversationId = action.payload;
+            console.log('Current conversaton ID: ', state.user.currentConversationId);
         },
     },
     extraReducers : (builder) => {
@@ -93,9 +114,30 @@ export const authSlice = createSlice({
 
 
 // TODO: exports for the additional reducers
+
+export const { 
+    reset, 
+    setCurrentConversation, 
+    setCurrentConversationId 
+} = authSlice.actions;
+
 export default authSlice.reducer;
 
 // Selectors to retreive data from the state
 export const selectCurrentAuthToken = (state) => state.auth.user.authToken;
 export const selectPrevConversations = (state) => state.auth.user.prevConversations;
+export const selectCurrentUserMessages = (state) => state.auth.user.currentUserMessages;
+export const selectCurrentBotMessages = (state) => state.auth.user.currentBotMessages;
+export const selectCurrentConversation = (state) => state.auth.user.currentConversation;
+export const selectCurrentConversationID = (state) => state.auth.user.currentConversationId;
+
+
+export const selectMessagesFromConversation = (conversationId) => 
+  createSelector([selectPrevConversations], (prevConversations) => {
+    const conversation = prevConversations.find(
+        (conv) => conv.id === conversationId
+    );
+    console.log('Current conversation: ', conversation);
+    return conversation ? conversation.history : [];
+});
 

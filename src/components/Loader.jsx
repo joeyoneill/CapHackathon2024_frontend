@@ -6,8 +6,8 @@ function Loader() {
     <>
       <Oval
         visible={true}
-        height="80"
-        width="80"
+        height="40"
+        width="40"
         color="#5767f8"
         secondaryColor="#f3f4f6"
         ariaLabel="oval-loading"

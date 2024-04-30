@@ -1,30 +1,25 @@
-import React, { 
-  useState, 
-  useEffect,
-} from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  getConversationHistory,
-} from "../store/auth/AuthSlice";
+import { getConversationHistory } from "../store/auth/AuthSlice";
 import { selectCurrentAuthToken } from "../store/auth/AuthSlice";
 import ConversationHistory from "../components/ConversationHistory";
 import Chat from "../components/Chat";
+import Loader from "../components/Loader";
 
 function ChatPage() {
-
   const dispatch = useDispatch();
   const token = useSelector(selectCurrentAuthToken);
 
   const [isHistoryOpen, setIsHistoryOpen] = useState(true);
   const [conversations, setConversations] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // load the previous conversations when the component mounts
   useEffect(() => {
     if (token) {
       dispatch(getConversationHistory({ authToken: token }));
-      console.log('Conversations got from api');
     }
-  }, [token, dispatch])
+  }, [token, dispatch]);
 
   const toggleHistory = () => {
     setIsHistoryOpen(!isHistoryOpen);
