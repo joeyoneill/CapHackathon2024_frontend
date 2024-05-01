@@ -17,16 +17,62 @@ function ConversationHistory() {
 
   const [loading, setLoading] = useState(false);
 
+  // state for the files
+  const [files, setFiles] = useState([]);
+
   const prevConversations = useSelector(selectPrevConversations);
 
   useEffect(() => {
     if (token) {
       setLoading(true);
-      console.log('loading...')
+      console.log("loading...");
       dispatch(getConversationHistory({ authToken: token }));
       setLoading(false);
     }
   }, [token, dispatch]);
+
+  // File upload functions
+
+  // File Selection Handler
+  const handleFileChange = (event) => {
+    setFiles([...files, ...Array.from(event.target.files)]);
+  };
+
+  // File Removal Handler
+  const handleFileRemove = (index) => {
+    const newFiles = files.filter((_, i) => i !== index);
+    setFiles(newFiles);
+  };
+
+  // File Upload Handler
+  const uploadFiles = async () => {
+    // Upload Files
+    // TODO: Implement File Upload Logic
+    console.log(files);
+
+    // Initialize FormData
+    const formData = new FormData();
+
+    // Append Files to FormData
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    // API CALL
+    try {
+      const response = await fetch("http://localhost:8000/upload_files", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
+
+    // Clear Files
+    setFiles([]);
+  };
 
   return (
     <div>
@@ -36,6 +82,69 @@ function ConversationHistory() {
         <p>
           <FaPenToSquare />
         </p>
+      </div>
+
+      {/* File Upload Piece */}
+      <div className="w-full px-2">
+        {/* Open Modal Button */}
+        <button
+          className="w-full bg-capVibrantBlue rounded-lg text-white mt-4 h-8"
+          onClick={() =>
+            document.getElementById("file_upload_modal").showModal()
+          }
+        >
+          Upload Documents
+        </button>
+
+        {/* File Upload Modal */}
+        <dialog id="file_upload_modal" className="modal">
+          <div className="modal-box">
+            {/* Close Modal Button */}
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                ✕
+              </button>
+            </form>
+
+            <h3 className="font-bold text-lg text-center mb-2">File Upload</h3>
+            <hr />
+
+            <p className="py-4 text-md font-semibold text-center">Upload Files (.docx, .pdf, .txt)</p>
+            <div className="flex justify-center">
+              <input
+                type="file"
+                multiple
+                accept=".docx,.pdf,.txt"
+                className="file-input file-input-bordered file-input-sm w-full max-w-xs"
+                onChange={handleFileChange}
+              />
+            </div>
+
+            <ul className="my-4 space-y-2">
+              <li className="font-semibold">Selected Files:</li>
+              {files.map((file, index) => (
+                <li key={index} className="flex justify-between">
+                  {file.name}
+                  <button
+                    className="btn btn-error btn-xs w-1/5 text-white"
+                    onClick={() => handleFileRemove(index)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex justify-center">
+              <button
+                className="btn bg-capVibrantBlue h-10 w-1/2 btn-sm mt-4 text-white"
+                onClick={uploadFiles}
+              >
+                Upload Files
+              </button>
+            </div>
+          </div>
+        </dialog>
       </div>
 
       {loading ? (
