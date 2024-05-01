@@ -69,6 +69,10 @@ export const authSlice = createSlice({
             state.user.currentConversationId = action.payload;
             console.log('Current conversaton ID: ', state.user.currentConversationId);
         },
+        updatePrevConversations(state, action) {
+            state.user.prevConversations = action.payload;
+            console.log('Updated prev conversations: ', state.user.prevConversations);
+        }
     },
     extraReducers : (builder) => {
         // case for the authenticate pending
@@ -118,7 +122,8 @@ export const authSlice = createSlice({
 export const { 
     reset, 
     setCurrentConversation, 
-    setCurrentConversationId 
+    setCurrentConversationId,
+    updatePrevConversations,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { connect, useSelector, useDispatch } from "react-redux";
 import {
   selectCurrentAuthToken,
   selectCurrentConversation,
   selectCurrentConversationID,
+  selectPrevConversations,
 } from "../store/auth/AuthSlice";
+import { updatePrevConversations } from "../store/auth/AuthSlice";
 import { getConversationHistory } from "../store/auth/AuthSlice";
 import { setCurrentConversation } from "../store/auth/AuthSlice";
 import { FaCircleArrowUp } from "react-icons/fa6";
@@ -13,6 +15,9 @@ import UserMessageBubble from "./UserMessageBubble";
 
 function Chat() {
   const dispatch = useDispatch();
+
+  const messagesEndRef = useRef(null);
+
   // state to hold the input value
   const [input, setInput] = useState("");
   // state to tell if there's text in the input field
@@ -23,15 +28,29 @@ function Chat() {
   const [response, setResponse] = useState("");
   const [socket, setSocket] = useState(null);
 
+  //tester for the useEffect trigger
+  const [wsClosed, setWSClosed] = useState(false);
+
   const token = useSelector(selectCurrentAuthToken);
 
   const currentConversation = useSelector(selectCurrentConversation);
   const currentConversationId = useSelector(selectCurrentConversationID);
+  const prevConversations = useSelector(selectPrevConversations);
+
+  const allConversations = useSelector(selectPrevConversations);
 
   const handleChange = (e) => {
     setUserInput(e.target.value);
     setTextEntered(e.target.value.length > 0);
   };
+
+  // used to get the updated conversation history
+  useEffect(() => {
+    dispatch(getConversationHistory({ authToken: token}));
+    console.log('Updated conversation history fetched');
+    dispatch(updatePrevConversations(currentConversation));
+    console.log('Updated prevConversations');
+  }, [dispatch, wsClosed, currentConversation]);
 
   // websocket connection
   const connectWebSocket = () => {
@@ -39,13 +58,14 @@ function Chat() {
 
     ws.onopen = () => {
       console.log("Connected to Websocket...");
+      setWSClosed(false);
       setSocket(ws);
 
       if (userInput.trim() !== "") {
         ws.send(
           JSON.stringify({
             query: userInput,
-            chatId: "chat-id-001",
+            chatId: currentConversationId,
             jwt: `Bearer ${token}`,
             email: "test@test.com",
           })
@@ -77,23 +97,10 @@ function Chat() {
       }
     };
 
-    // useEffect(() => {
-    //   const getConversationData = async () => {
-    //     dispatch(getConversationHistory());
-
-    //     console.log('conversation data updated');
-    //   };
-
-    //   getConversationData();
-    //   // if (currentConversationId) {
-    //   //   await dispatch(getConversationHistory());
-    //   // }
-    // }, [dispatch, response])
-
     ws.onclose = () => {
-      dispatch(getConversationHistory);
       console.log("Current Conversation: ", currentConversation);
-      setAiMessages((prevMessages) => [...prevMessages, response]);
+      dispatch(getConversationHistory({ authToken: token }));
+      dispatch(updatePrevConversations(currentConversation));
       setResponse("");
       console.log("Disconnected from server");
       setSocket(null);
@@ -103,6 +110,10 @@ function Chat() {
   useEffect(() => {
     console.log('Model Responses: ', aiMessages);
   }, [aiMessages]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currentConversation]);
 
   return (
     <div className="flex flex-col h-screen w-full">
@@ -124,7 +135,7 @@ function Chat() {
               <MessageBubble key={`ai-${index}`} message={message.ai} />
             </>
           ))}
-          {userMessages.map((userMessage, index) => (
+          {/* {userMessages.map((userMessage, index) => (
             <React.Fragment key={`message-${index}`}>
               <UserMessageBubble key={`user-${index}`} message={userMessage} />
               {aiMessages[index] && (
@@ -134,9 +145,11 @@ function Chat() {
                 />
               )}
             </React.Fragment>
-          ))}
+          ))} */}
+          {userInput && <UserMessageBubble message={userInput} />}
           {console.log("Response state: ", response)}
           {response && <MessageBubble message={response} />}
+          <div ref={messagesEndRef} />
         </div>
         {/* <div>{response}</div> */}
       </div>
