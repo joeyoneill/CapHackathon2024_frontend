@@ -12,6 +12,7 @@ import { setCurrentConversation } from "../store/auth/AuthSlice";
 import { FaCircleArrowUp } from "react-icons/fa6";
 import MessageBubble from "./MessageBubble";
 import UserMessageBubble from "./UserMessageBubble";
+import CapLogoWhite from "../assets/CapLogoWhite.png";
 
 function Chat() {
   const dispatch = useDispatch();
@@ -118,8 +119,15 @@ function Chat() {
   return (
     <div className="flex flex-col h-screen w-full">
       {/* header */}
-      <div className="h-16 mt-3 bg-blue-400 mb-2 rounded-md flex flex-row justify-center items-center text-white">
-        Hackathon GPT
+      <div className="h-16 mt-3 mb-2 rounded-md flex flex-row justify-center items-center text-white">
+        <img 
+          src={CapLogoWhite}
+          alt='CapLogoWhite'
+          className="h-20"
+        />
+
+        <div className='divider' />
+        
       </div>
 
       {/* message history */}

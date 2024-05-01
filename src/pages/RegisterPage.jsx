@@ -1,16 +1,17 @@
 import { Link, useNavigate, redirect } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import { authenticate, getConversationHistory } from "../store/auth/AuthSlice";
-import { selectCurrentAuthToken } from "../store/auth/AuthSlice";
+import { 
+    authenticate, 
+    register
+} from "../store/auth/AuthSlice";
 import Loader from "../components/Loader";
 import CapLogo from "../assets/CapLogo.png";
 
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const token = useSelector(selectCurrentAuthToken);
+  
 
   // state for the email and password fields
   const [email, setEmail] = useState("");
@@ -20,29 +21,17 @@ export default function Login() {
   // const [token, setToken] = useState('');
   const [redirectToHome, setRedirectToHome] = useState(false);
 
-  // method to call the authenticate method in the AuthService
-  const logUserIn = async () => {
-    try {
-      setIsLoading(true);
-      await dispatch(authenticate({ email: email, password: password }));
-      // .then(() => {
-      //   updatedToken = useSelector(selectCurrentAuthToken);
-      //   dispatch(getConversationHistory({authToken: updatedToken}));
-      // });
-      // console.log('Token: ', token);
-      // await dispatch(getConversationHistory({authToken: token}));
-      setIsLoading(false);
-      navigate("/Chat");
-    } catch (error) {
-      console.log("Error logging in: ", error);
-      setUserLoggedIn(false);
-      setRedirectToHome(false);
-    }
-  };
-
-  // method to navigate to the register page
   const registerUser = async () => {
-    navigate("/Register");
+    try {
+        setIsLoading(true);
+        await dispatch(register({ email: email, password: password }));
+        setIsLoading(false);
+        navigate("/");
+    } catch (error) {
+        console.log("Error registering: ", error);
+        setUserLoggedIn(false);
+        setRedirectToHome(false);
+    }
   };
 
   return (
@@ -63,7 +52,7 @@ export default function Login() {
             alt="Your Company"
           />
           <h2 className="mt-4 text-center text-xl font-semibold leading-9 tracking-tight text-gray-900">
-            Sign in to your account
+            Create your account
           </h2>
         </div>
 
@@ -100,11 +89,11 @@ export default function Login() {
               >
                 Password
               </label>
-              <div className="text-sm">
+              {/* <div className="text-sm">
                 <a className="font-semibold text-capBlue hover:text-indigo-500">
                   Forgot password?
                 </a>
-              </div>
+              </div> */}
             </div>
             <div className="mt-2">
               <input
@@ -122,18 +111,16 @@ export default function Login() {
 
           <div>
             <button
-              onClick={logUserIn}
+              onClick={registerUser}
               className="flex w-full mt-4 justify-center rounded-md bg-capVibrantBlue hover:bg-capVibrantBlue px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Sign in
+              Create Account
             </button>
-            <div className="text-sm flex justify-center mt-5">
-              <a 
-                onClick={registerUser}
-                className="font-semibold text-capBlue hover:text-indigo-500">
+            {/* <div className="text-sm flex justify-center mt-5">
+              <a className="font-semibold text-capBlue hover:text-indigo-500">
                 Create an Account
               </a>
-            </div>
+            </div> */}
           </div>
 
           {isLoading ? (

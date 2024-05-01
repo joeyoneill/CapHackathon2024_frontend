@@ -60,9 +60,12 @@ function ConversationHistory() {
 
     // API CALL
     try {
-      const response = await fetch("http://localhost:8000/upload_files", {
+      const response = await fetch("https://columbiateam1backend.azurewebsites.net/upload_files", {
         method: "POST",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
       });
       const result = await response.json();
       console.log(result);

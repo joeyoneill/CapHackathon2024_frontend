@@ -31,8 +31,25 @@ export const authenticate = createAsyncThunk(
     },
 );
 
+// calls to the services with asyncThunk get pieces of the state
+export const register = createAsyncThunk(
+    // Action type string - unique for each function
+    'auth/register',
+    // The payload creator receives the partial `{title, content, user}` object
+    async ({ email, password }, thunkAPI) => {
+        try {
+            return await AuthService.register(email, password);
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error: error.message });
+        }
+    }
+);
+
+// calls to the services with asyncThunk get pieces of the state
 export const getConversationHistory = createAsyncThunk(
+    // Action type string - unique for each function
     'auth/getConversations',
+    // The payload creator receives the partial `{title, content, user}` object
     async ({ authToken }, thunkAPI) => {
         try {
             return await AuthService.GetAllConversations(authToken);
@@ -93,6 +110,24 @@ export const authSlice = createSlice({
             state.user.isLoading = false;
             state.user.hasError = true;
             state.user.errorMessage = 'Error authenticating';
+        });
+
+        // case for the register pending
+        builder.addCase(register.pending, (state) => {
+            state.user.isLoading = true;
+        });
+
+        // case for the register succeeding
+        builder.addCase(register.fulfilled, (state, action) => {
+            console.log('Register response: ', action.payload);
+            state.user.isLoading = false;
+        });
+
+        // case for the register failing
+        builder.addCase(register.rejected, (state) => {
+            state.user.isLoading = false;
+            state.user.hasError = true;
+            state.user.errorMessage = 'Error registering';
         });
 
         // case for the getConversations pending

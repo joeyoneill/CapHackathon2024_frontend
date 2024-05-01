@@ -32,6 +32,35 @@ const authenticate = async (email, password) => {
   }
 };
 
+// method to register a new user with a given email and password
+const register = async (email, password) => {
+  try {
+    console.log('Register request: ', email, password);
+
+    // create the request body
+    const requestBody = JSON.stringify({
+      email: email,
+      password_hash: password,
+    });
+
+    // get the response from the call
+    const response = await axios.post(
+      `${baseUrl}auth/register`,
+      requestBody,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+
+    // log the response
+    console.log('Register response: ', response.data);
+
+    // return the response
+    return response.data;
+
+  } catch (error) {
+    console.log('Register error: ', error.response.data);
+  }
+}
+
 // API call to get the previous conversations
 const GetAllConversations = async (authToken) => {
   try {
@@ -62,9 +91,11 @@ const GetAllConversations = async (authToken) => {
   }
 };
 
+// export the methods
 const AuthService = {
     authenticate,
-    GetAllConversations
+    register,
+    GetAllConversations,
 };
 
 export default AuthService;

@@ -5,6 +5,7 @@ import Landing from "./pages/Landing";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import ChatPage from "./pages/ChatPage";
 import Login from "./pages/Login";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/Chat" element={<ChatPage />} />
+          <Route path="/Register" element={<RegisterPage />} />
         </Routes>
       </Router>
     </>
