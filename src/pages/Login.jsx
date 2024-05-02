@@ -1,8 +1,11 @@
 import { Link, useNavigate, redirect } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import { authenticate, getConversationHistory } from "../store/auth/AuthSlice";
+import {
+  authenticate,
+  getConversationHistory,
+  setUserEmail,
+} from "../store/auth/AuthSlice";
 import { selectCurrentAuthToken } from "../store/auth/AuthSlice";
 import Loader from "../components/Loader";
 import CapLogo from "../assets/CapLogo.png";
@@ -17,16 +20,37 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [error, setError] = useState(false);
   // const [token, setToken] = useState('');
   const [redirectToHome, setRedirectToHome] = useState(false);
 
   // method to call the authenticate method in the AuthService
   const logUserIn = async () => {
     try {
+      // setIsLoading(true);
+      // await dispatch(authenticate({ email: email, password: password }));
+      // setIsLoading(false);
+      // navigate("/Chat");
+      setError(false);
       setIsLoading(true);
-      await dispatch(authenticate({ email: email, password: password }));
-      setIsLoading(false);
-      navigate("/Chat");
+      const result = await dispatch(
+        authenticate({ email: email, password: password })
+      );
+
+      // check if the authentication was successful
+      if (result.payload && result.payload.status === 200) {
+        setIsLoading(false);
+        dispatch(setUserEmail(email));
+        navigate("/Chat");
+      } else {
+        setIsLoading(false);
+        setError(true);
+        setUserLoggedIn(false);
+        console.log(
+          "Authentication failed : Login Page ",
+          result.payload.message
+        );
+      }
     } catch (error) {
       console.log("Error logging in: ", error);
       setUserLoggedIn(false);
@@ -121,10 +145,16 @@ export default function Login() {
             >
               Sign in
             </button>
+            {error && (
+              <p className="text-red-500 mt-2 text-sm text-center">
+                Login failed. Please check your email and password.
+              </p>
+            )}
             <div className="text-sm flex justify-center mt-5">
-              <a 
+              <a
                 onClick={registerUser}
-                className="font-semibold text-capBlue hover:text-indigo-500">
+                className="font-semibold text-capBlue hover:text-indigo-500"
+              >
                 Create an Account
               </a>
             </div>

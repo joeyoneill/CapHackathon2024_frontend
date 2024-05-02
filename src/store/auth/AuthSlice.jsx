@@ -10,6 +10,7 @@ const initialState = {
         hasError: false,
         errorMessage: null,
         currentConversationId: null,
+        email: null,
         currentConversation: [],
         prevConversations: [],
         currentUserMessages: [],
@@ -75,7 +76,6 @@ export const authSlice = createSlice({
     reducers:{
         reset: (state) => {
             state.user = initialState.user;
-
         },
         setCurrentConversation(state, action) {
             console.log('Conversation payload: ', action.payload);
@@ -84,12 +84,17 @@ export const authSlice = createSlice({
         },
         setCurrentConversationId(state, action) {
             state.user.currentConversationId = action.payload;
+            // state.user.currentConversation = [];
             console.log('Current conversaton ID: ', state.user.currentConversationId);
         },
         updatePrevConversations(state, action) {
             state.user.prevConversations = action.payload;
             console.log('Updated prev conversations: ', state.user.prevConversations);
-        }
+        },
+        setUserEmail(state, action) {
+            state.user.email = action.payload;
+            console.log('State user email: ', state.user.email);
+        },
     },
     extraReducers : (builder) => {
         // case for the authenticate pending
@@ -159,6 +164,7 @@ export const {
     setCurrentConversation, 
     setCurrentConversationId,
     updatePrevConversations,
+    setUserEmail,
 } = authSlice.actions;
 
 export default authSlice.reducer;
@@ -170,7 +176,7 @@ export const selectCurrentUserMessages = (state) => state.auth.user.currentUserM
 export const selectCurrentBotMessages = (state) => state.auth.user.currentBotMessages;
 export const selectCurrentConversation = (state) => state.auth.user.currentConversation;
 export const selectCurrentConversationID = (state) => state.auth.user.currentConversationId;
-
+export const selectUserEmail = (state) => state.auth.user.email;
 
 export const selectMessagesFromConversation = (conversationId) => 
   createSelector([selectPrevConversations], (prevConversations) => {

@@ -5,6 +5,7 @@ import {
   selectCurrentConversation,
   selectCurrentConversationID,
   selectPrevConversations,
+  selectUserEmail,
 } from "../store/auth/AuthSlice";
 import { updatePrevConversations } from "../store/auth/AuthSlice";
 import { getConversationHistory } from "../store/auth/AuthSlice";
@@ -33,7 +34,7 @@ function Chat() {
   const [wsClosed, setWSClosed] = useState(false);
 
   const token = useSelector(selectCurrentAuthToken);
-
+  const userEmail = useSelector(selectUserEmail);
   const currentConversation = useSelector(selectCurrentConversation);
   const currentConversationId = useSelector(selectCurrentConversationID);
   const prevConversations = useSelector(selectPrevConversations);

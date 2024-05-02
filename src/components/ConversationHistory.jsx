@@ -3,15 +3,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaPenToSquare } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { getConversationHistory } from "../store/auth/AuthSlice";
+import { getConversationHistory, setCurrentConversationId } from "../store/auth/AuthSlice";
 import {
   selectCurrentAuthToken,
   selectPrevConversations,
   setCurrentConversation,
+  selectUserEmail,
   reset,
 } from "../store/auth/AuthSlice";
 import ChatButton from "./ChatButton";
 import Loader from "./Loader";
+import { v4 as uuidv4 } from "uuid";
 
 function ConversationHistory() {
   const location = useLocation();
@@ -52,6 +54,15 @@ function ConversationHistory() {
     navigate("/");
   };
 
+  // function to generate a chat id
+  const generateChatId = () => {
+    const id = uuidv4();
+    console.log("Chat ID: ", id);
+    // return `chat-${id}`;
+    dispatch(setCurrentConversationId(`chat-${id}`));
+    dispatch(setCurrentConversation([]));
+  };
+
   // File upload functions
 
   // File Selection Handler
@@ -68,7 +79,6 @@ function ConversationHistory() {
   // File Upload Handler
   const uploadFiles = async () => {
     // Upload Files
-    // TODO: Implement File Upload Logic
     console.log(files);
 
     // Initialize FormData
@@ -104,7 +114,9 @@ function ConversationHistory() {
   return (
     <div className="flex flex-col h-full">
       {/* header for the conversation pane */}
-      <div className="flex flex-row h-10 items-center justify-center justify-between m-2">
+      <div 
+        onClick={generateChatId}
+        className="flex flex-row h-10 items-center justify-center justify-between m-2">
         <p className="font-semibold">Start New Chat</p>
         <p>
           <FaPenToSquare />
