@@ -180,10 +180,10 @@ function Chat() {
           {/* <FaCircleArrowUp className="h-5 w-5" /> */}
         </button>
         <button
-          className="h-full border border-1 border-slate-300 bg-slate-200 rounded-lg w-16"
+          className="h-full border border-1 border-slate-300 bg-slate-200 rounded-lg w-16 flex justify-center items-center"
           onClick={connectWebSocket}
         >
-          <FaCircleArrowUp />
+          <FaCircleArrowUp className="text-xl"/>
         </button>
       </div>
     </div>

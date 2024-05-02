@@ -25,12 +25,6 @@ export default function Login() {
     try {
       setIsLoading(true);
       await dispatch(authenticate({ email: email, password: password }));
-      // .then(() => {
-      //   updatedToken = useSelector(selectCurrentAuthToken);
-      //   dispatch(getConversationHistory({authToken: updatedToken}));
-      // });
-      // console.log('Token: ', token);
-      // await dispatch(getConversationHistory({authToken: token}));
       setIsLoading(false);
       navigate("/Chat");
     } catch (error) {

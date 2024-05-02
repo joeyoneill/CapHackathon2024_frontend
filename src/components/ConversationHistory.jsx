@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FaPenToSquare } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { getConversationHistory } from "../store/auth/AuthSlice";
@@ -7,20 +8,28 @@ import {
   selectCurrentAuthToken,
   selectPrevConversations,
   setCurrentConversation,
+  reset,
 } from "../store/auth/AuthSlice";
 import ChatButton from "./ChatButton";
 import Loader from "./Loader";
 
 function ConversationHistory() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector(selectCurrentAuthToken);
 
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState("Chat");
 
   // state for the files
   const [files, setFiles] = useState([]);
 
   const prevConversations = useSelector(selectPrevConversations);
+
+  // Check the pathname to determine the button text and route
+  const buttonText = location.pathname === "/Chat" ? "View Graph" : "View Chat";
+  const buttonRoute = location.pathname === "/Chat" ? "/Graph" : "/Chat";
 
   useEffect(() => {
     if (token) {
@@ -30,6 +39,18 @@ function ConversationHistory() {
       setLoading(false);
     }
   }, [token, dispatch]);
+
+  // handles the navigation between the chat and graph pages
+  const handleNavigate = () => {
+    setCurrentPage(buttonText === "View Graph" ? "Graph" : "Chat");
+    navigate(buttonRoute);
+  };
+
+  // handles the logout
+  const handleLogout = () => {
+    dispatch(reset());
+    navigate("/");
+  };
 
   // File upload functions
 
@@ -60,13 +81,16 @@ function ConversationHistory() {
 
     // API CALL
     try {
-      const response = await fetch("https://columbiateam1backend.azurewebsites.net/upload_files", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "https://columbiateam1backend.azurewebsites.net/upload_files",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
       const result = await response.json();
       console.log(result);
     } catch (error) {
@@ -78,7 +102,7 @@ function ConversationHistory() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       {/* header for the conversation pane */}
       <div className="flex flex-row h-10 items-center justify-center justify-between m-2">
         <p className="font-semibold">Start New Chat</p>
@@ -112,7 +136,9 @@ function ConversationHistory() {
             <h3 className="font-bold text-lg text-center mb-2">File Upload</h3>
             <hr />
 
-            <p className="py-4 text-md font-semibold text-center">Upload Files (.docx, .pdf, .txt)</p>
+            <p className="py-4 text-md font-semibold text-center">
+              Upload Files (.docx, .pdf, .txt)
+            </p>
             <div className="flex justify-center">
               <input
                 type="file"
@@ -200,6 +226,20 @@ function ConversationHistory() {
             </button>
         </Link>
       </div> */}
+      <div className="mt-auto px-2 absolute bottom-4 w-1/5">
+        <button
+          className="w-full bg-capBlue rounded-lg text-white mt-4 h-8"
+          onClick={handleNavigate}
+        >
+          {buttonText}
+        </button>
+        <button
+          className="w-full bg-red-400 rounded-lg text-white mt-2 h-8"
+          onClick={handleLogout}
+        >
+          Log Out
+        </button>
+      </div>
     </div>
   );
 }
