@@ -1,4 +1,5 @@
 // imports
+import NewBottomBar from "./NewBottomBar";
 
 // Main Component
 function NewChatCard({
@@ -6,7 +7,7 @@ function NewChatCard({
     userHistory,
 }) {
     return (
-        <div className="flex flex-col h-[100vh]">
+        <div className="flex flex-col h-[100vh] w-[80vw]">
 
             {/* Header */}
             <div>
@@ -15,7 +16,7 @@ function NewChatCard({
             </div>
 
             {/* Chat Area */}
-            <div className="mt-0 overflow-auto">
+            <div className="overflow-auto">
                 {userHistory.map((message, index) => (
                     <div className="">
                         <div className="chat chat-end">
@@ -30,6 +31,11 @@ function NewChatCard({
                         </div>
                     </div>
                 ))}
+            </div>
+            
+            {/* Bottom Bar */}
+            <div className="mt-auto">
+                <NewBottomBar />
             </div>
         </div>
     );
