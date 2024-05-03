@@ -1,7 +1,7 @@
 // imports
 import { useState, useEffect, useReducer } from "react";
 import { useSelector } from "react-redux";
-import { selectCurrentAuthToken } from "../store/auth/AuthSlice";
+import { selectCurrentAuthToken, selectUserEmail } from "../store/auth/AuthSlice";
 import {v4 as uuidv4} from "uuid";
 
 // In-App Components
@@ -72,24 +72,29 @@ function reducer(state, action) {
 function NewChatPage() {
 
     // API HOST NAME
-    const apiHostUrl = "https://columbiateam1backend.azurewebsites.net";
-    //const apiHostUrl = "http://localhost:8000";
+    const apiHostUrl = "columbiateam1backend.azurewebsites.net";
 
     // Initialize Reducer
     const [state, dispatch] = useReducer(reducer, initialState);
 
     // State Variables
     const [token, setToken] = useState(useSelector(selectCurrentAuthToken));
+    const [email, setEmail] = useState(useSelector(selectUserEmail));
     const [chatId, setChatId] = useState(null);
     const [isIntialLoading, setIsIntialLoading] = useState(false);
     const [aiHistory, setAiHistory] = useState([]);
     const [userHistory, setUserHistory] = useState([]);
 
     // Stream Vars
+    const [socket, setSocket] = useState(null);
     const [userInput, setUserInput] = useState('');
+    const [userMsg, setUserMsg] = useState('');
     const [aiResponse, setAiResponse] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
 
+    ///////////////////////////////////////////////////////////////////////////////////////
     // Initial Get of Variables
+    ///////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         console.log(token);
         // Fetchs all initial data
@@ -107,7 +112,7 @@ function NewChatPage() {
             // Try to Get Data from APIs
             try {
                 // Fetch History
-                const response = await fetch(apiHostUrl + '/all_chat_history', {
+                const response = await fetch('https://' + apiHostUrl + '/all_chat_history', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -131,7 +136,87 @@ function NewChatPage() {
         fetchData();
     }, []);
 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // Websocket Connection
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // Webosocket Connection
+    const connectWebSocket = () => {
+        //const ws = new WebSocket('wss://' + apiHostUrl + '/ws');
+        const ws = new WebSocket('ws://localhost:8000/ws');
+
+        ws.onopen = () => {
+            console.log('Connected to Websocket...');
+            setIsGenerating(true);
+            setUserMsg(userInput);
+            setSocket(ws);
+            
+            if (userInput.trim() !== '') {
+                ws.send(
+                    JSON.stringify(
+                    {
+                        query: userInput,
+                        chatId: chatId,
+                        jwt: `Bearer ${token}`,
+                        email: email
+                    }
+                ));
+                setUserInput('');
+            } else {
+                ws.close();
+            }
+        };
+
+        let json_expected = false;
+        ws.onmessage = (event) => {
+            const msg = event.data;
+            if (msg === '<<END>>') {
+                ws.close();
+            }
+            else if (msg === '<<JSON>>') {
+                json_expected = true;
+            }
+            else if (msg === '<<E:NO_QUERY>>') {
+                ws.close();
+                console.log('ERROR: No query provided...')
+            }
+            else if (msg === '<<E:NO_CHAT_ID>>') {
+                ws.close();
+                console.log('ERROR: No chat ID provided...')
+            }
+            else if (msg === '<<E:INVALID_JWT>>') {
+                ws.close();
+                console.log('ERROR: Invalid JWT Token provided...')
+            }
+            else if (msg === '<<E:NO_EMAIL>>') {
+                ws.close();
+                console.log('ERROR: No email provided...')
+            }
+            else {
+                if (json_expected) {
+                    try {
+                        const json_data = JSON.parse(msg);
+                        setAiHistory((prevAiHistory) => [...prevAiHistory, json_data.ai_response]);
+                        setUserHistory((prevUserHistory) => [...prevUserHistory, json_data.user_query]);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                } else {
+                    setAiResponse((prevAiResponse) => prevAiResponse + msg);
+                }
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('Disconnected from server.');
+            setSocket(null);
+            setIsGenerating(false);
+            setUserMsg('');
+        };
+    };
+
+    ///////////////////////////////////////////////////////////////////////////////////////
     // return JSX
+    ///////////////////////////////////////////////////////////////////////////////////////
     return (
         <div className="flex">
             <div>
@@ -151,6 +236,9 @@ function NewChatPage() {
                     userInput={userInput}
                     aiResponse={aiResponse}
                     setUserInput={setUserInput}
+                    connectWebSocket={connectWebSocket}
+                    isGenerating={isGenerating}
+                    userMsg={userMsg}
                 />
             </div>
         </div>

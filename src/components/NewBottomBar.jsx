@@ -1,9 +1,12 @@
 // imports
+import { connect } from "react-redux";
 import TextareaAutosize from "react-textarea-autosize";
 
 function NewBottomBar({
     userInput,
     setUserInput,
+    connectWebSocket,
+    isGenerating,
 }) {
     return (
         <div className="flex justify-center bg-slate-100 pt-4 pb-4">
@@ -18,10 +21,8 @@ function NewBottomBar({
 
             <button
                 className="btn btn-sm btn-primary ml-2"
-                onClick={() => {
-                    console.log('User Input:', userInput);
-                    setUserInput("");
-                }}
+                onClick={connectWebSocket}
+                disabled={isGenerating}
             >
                 Submit
             </button>

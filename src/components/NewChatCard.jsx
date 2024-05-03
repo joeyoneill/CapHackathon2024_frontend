@@ -9,6 +9,9 @@ function NewChatCard({
     userInput,
     aiResponse,
     setUserInput,
+    connectWebSocket,
+    isGenerating,
+    userMsg,
 }) {
     return (
         <div className="flex flex-col h-[100vh] w-[80vw]">
@@ -22,7 +25,7 @@ function NewChatCard({
             {/* Chat Area */}
             <div className="overflow-auto">
                 {userHistory.map((message, index) => (
-                    <div className="">
+                    <div>
                         <div className="chat chat-end">
                             <div className="chat-bubble chat-bubble-success">
                                 {message}
@@ -35,6 +38,21 @@ function NewChatCard({
                         </div>
                     </div>
                 ))}
+
+                {isGenerating ? (
+                    <div>
+                        <div className="chat chat-end">
+                            <div className="chat-bubble chat-bubble-success">
+                                {userMsg}
+                            </div>
+                        </div>
+                        <div className="chat chat-start">
+                            <div className="chat-bubble bg-capVibrantBlue text-white">
+                                {aiResponse}
+                            </div>
+                        </div>
+                    </div>
+                ):null}
             </div>
             
             {/* Bottom Bar */}
@@ -42,6 +60,8 @@ function NewChatCard({
                 <NewBottomBar
                     setUserInput={setUserInput}
                     userInput={userInput}
+                    connectWebSocket={connectWebSocket}
+                    isGenerating={isGenerating}
                 />
             </div>
         </div>

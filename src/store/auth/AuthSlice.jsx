@@ -7,6 +7,12 @@ const initializeAuthToken = () => {
   return storedToken ? { authToken: storedToken } : null;
 }
 
+const initializeEmail = () => {
+    const storedEmail = localStorage.getItem("email");
+    return storedEmail ? { email: storedEmail } : null;
+    
+}
+
 const initialState = {
     user: {
         // authToken: null, 
@@ -16,7 +22,8 @@ const initialState = {
         hasError: false,
         errorMessage: null,
         currentConversationId: null,
-        email: null,
+        // email: null,
+        ...initializeEmail(),
         currentConversation: [],
         prevConversations: [],
         currentUserMessages: [],
@@ -93,6 +100,7 @@ export const authSlice = createSlice({
         },
         setUserEmail(state, action) {
             state.user.email = action.payload;
+            localStorage.setItem('authToken', action.payload);
             console.log('State user email: ', state.user.email);
         },
         addUserMessage(state, action) {
