@@ -85,6 +85,10 @@ function NewChatPage() {
     const [aiHistory, setAiHistory] = useState([]);
     const [userHistory, setUserHistory] = useState([]);
 
+    // Stream Vars
+    const [userInput, setUserInput] = useState('');
+    const [aiResponse, setAiResponse] = useState('');
+
     // Initial Get of Variables
     useEffect(() => {
         console.log(token);
@@ -144,6 +148,9 @@ function NewChatPage() {
                 <NewChatCard
                     aiHistory={aiHistory}
                     userHistory={userHistory}
+                    userInput={userInput}
+                    aiResponse={aiResponse}
+                    setUserInput={setUserInput}
                 />
             </div>
         </div>
