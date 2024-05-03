@@ -16,6 +16,7 @@ function NewHistorySidebar({
   setUserHistory,
   showSpash,
   setShowSplash,
+  isLoadingLock,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -117,6 +118,7 @@ function NewHistorySidebar({
         <button
           className="btn btn-info w-full text-white"
           onClick={handleNewChat}
+          disabled={isLoadingLock}
         >
           New Chat
         </button>
@@ -134,6 +136,7 @@ function NewHistorySidebar({
           onClick={() =>
             document.getElementById("file_upload_modal").showModal()
           }
+          disabled={isLoadingLock}
         >
           Upload Documents
         </button>
@@ -200,7 +203,9 @@ function NewHistorySidebar({
           <div
             className="p-2 pl-4 pr-4 text-left hover:bg-slate-200 cursor-pointer rounded-md overflow-x-hidden"
             onClick={() => {
-              handleChatSelection(index, item.id);
+              if (!isLoadingLock) {
+                handleChatSelection(index, item.id);
+              }
             }}
           >
             {item.history.human[0].length > 19
@@ -217,12 +222,14 @@ function NewHistorySidebar({
         <button
           className="btn btn-info w-full text-white"
           onClick={navigateToGraph}
+          disabled={isLoadingLock}
         >
           Knowledge Graphs
         </button>
         <button
           className="btn btn-error w-full text-white mt-2"
           onClick={logUserOut}
+          disabled={isLoadingLock}
         >
           Log Out
         </button>

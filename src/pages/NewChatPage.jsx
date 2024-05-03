@@ -85,6 +85,7 @@ function NewChatPage() {
     const [aiHistory, setAiHistory] = useState([]);
     const [userHistory, setUserHistory] = useState([]);
     const [showSplash, setShowSplash] = useState(false);
+    const [isLoadingLock, setIsLoadingLock] = useState(false);
 
     // Stream Vars
     const [socket, setSocket] = useState(null);
@@ -141,13 +142,14 @@ function NewChatPage() {
     // Websocket Connection
     ///////////////////////////////////////////////////////////////////////////////////////
     // Webosocket Connection
-    const connectWebSocket = () => {
+    const connectWebSocket = async () => {
         const ws = new WebSocket('wss://' + apiHostUrl + '/ws');
         //const ws = new WebSocket('ws://localhost:8000/ws');
 
         ws.onopen = () => {
             console.log('Connected to Websocket...');
             setIsGenerating(true);
+            setIsLoadingLock(true);
             setUserMsg(userInput);
             setShowSplash(false);
             setSocket(ws);
@@ -214,6 +216,7 @@ function NewChatPage() {
             setSocket(null);
             setUserMsg('');
             setAiResponse('');
+            setIsLoadingLock(false);
         };
     };
 
@@ -233,6 +236,8 @@ function NewChatPage() {
 
                     showSplash={showSplash}
                     setShowSplash={setShowSplash}
+
+                    isLoadingLock={isLoadingLock}
                 />
             </div>
             <div>
