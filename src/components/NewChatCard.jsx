@@ -50,13 +50,13 @@ function NewChatCard({
                     {isGenerating ? (
                         <div>
                             <div className="chat chat-end">
-                                <div className="chat-bubble chat-bubble-success">
+                                <div className="chat-bubble bg-slate-400 text-white">
                                     {userMsg}
                                 </div>
                             </div>
                             <div className="chat chat-start">
                                 <div className="chat-bubble bg-capVibrantBlue text-white">
-                                    {aiResponse}
+                                    {aiResponse}<span className="loading loading-spinner loading-xs"></span>
                                 </div>
                             </div>
                         </div>
