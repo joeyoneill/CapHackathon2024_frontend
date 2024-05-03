@@ -195,6 +195,7 @@ function NewChatPage() {
                 if (json_expected) {
                     try {
                         const json_data = JSON.parse(msg);
+                        setIsGenerating(false);
                         setAiHistory((prevAiHistory) => [...prevAiHistory, json_data.ai_response]);
                         setUserHistory((prevUserHistory) => [...prevUserHistory, json_data.user_query]);
                     } catch (error) {
@@ -209,8 +210,8 @@ function NewChatPage() {
         ws.onclose = () => {
             console.log('Disconnected from server.');
             setSocket(null);
-            setIsGenerating(false);
             setUserMsg('');
+            setAiResponse('');
         };
     };
 
