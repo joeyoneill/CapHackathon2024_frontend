@@ -65,17 +65,8 @@ function NewChatCard({
                     isGenerating={isGenerating}
                 />
             </div>
-          ))}
           <div ref={messageEndRef} />
         </div>
-      )}
-
-      {/* Bottom Bar */}
-      <div className="mt-auto">
-        <NewBottomBar />
-      </div>
-    </div>
-  );
-}
+    )};
 
 export default NewChatCard;
