@@ -59,7 +59,7 @@ function ChatPage() {
       </div>
 
       {/* main chat area */}
-      <div className="w-4/5 mx-5">
+      <div className="w-4/5 mx-5 overflow-x-hidden">
         <Graph />
       </div>
     </div>

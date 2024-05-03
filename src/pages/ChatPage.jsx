@@ -2,13 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getConversationHistory } from "../store/auth/AuthSlice";
 import { selectCurrentAuthToken } from "../store/auth/AuthSlice";
+import { selectCurrentConversationID } from "../store/auth/AuthSlice";
 import ConversationHistory from "../components/ConversationHistory";
 import Chat from "../components/Chat";
+import ChatSplash from "../components/ChatSplash";
 import Loader from "../components/Loader";
+import { current } from "@reduxjs/toolkit";
 
 function ChatPage() {
   const dispatch = useDispatch();
   const token = useSelector(selectCurrentAuthToken);
+  const currentConversationID = useSelector(selectCurrentConversationID);
+  console.log("Current Conversation ID: ", currentConversationID);
 
   const [isHistoryOpen, setIsHistoryOpen] = useState(true);
   const [conversations, setConversations] = useState([]);
@@ -59,7 +64,12 @@ function ChatPage() {
 
       {/* main chat area */}
       <div className="w-4/5 mx-5">
-        <Chat />
+        {currentConversationID === null ? (
+          <ChatSplash />
+        ) : (
+          <Chat />
+        )}
+        {/* <Chat /> */}
       </div>
     </div>
   );

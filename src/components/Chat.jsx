@@ -5,11 +5,15 @@ import {
   selectCurrentConversation,
   selectCurrentConversationID,
   selectPrevConversations,
+  selectCurrentUserMessages,
+  selectCurrentBotMessages,
   selectUserEmail,
 } from "../store/auth/AuthSlice";
 import { updatePrevConversations } from "../store/auth/AuthSlice";
 import { getConversationHistory } from "../store/auth/AuthSlice";
 import { setCurrentConversation } from "../store/auth/AuthSlice";
+import { addUserMessage } from "../store/auth/AuthSlice";
+import { addBotMessage } from "../store/auth/AuthSlice";
 import { FaCircleArrowUp } from "react-icons/fa6";
 import MessageBubble from "./MessageBubble";
 import UserMessageBubble from "./UserMessageBubble";
@@ -25,8 +29,8 @@ function Chat() {
   // state to tell if there's text in the input field
   const [textEntered, setTextEntered] = useState("false");
   const [userInput, setUserInput] = useState("");
-  const [userMessages, setUserMessages] = useState([]);
-  const [aiMessages, setAiMessages] = useState([]);
+  // const [userMessages, setUserMessages] = useState([]);
+  // const [aiMessages, setAiMessages] = useState([]);
   const [response, setResponse] = useState("");
   const [socket, setSocket] = useState(null);
 
@@ -38,6 +42,8 @@ function Chat() {
   const currentConversation = useSelector(selectCurrentConversation);
   const currentConversationId = useSelector(selectCurrentConversationID);
   const prevConversations = useSelector(selectPrevConversations);
+  const userMessages = useSelector(selectCurrentUserMessages);
+  const botMessages = useSelector(selectCurrentBotMessages);
 
   const allConversations = useSelector(selectPrevConversations);
 
@@ -48,10 +54,10 @@ function Chat() {
 
   // used to get the updated conversation history
   useEffect(() => {
-    dispatch(getConversationHistory({ authToken: token}));
-    console.log('Updated conversation history fetched');
+    dispatch(getConversationHistory({ authToken: token }));
+    console.log("Updated conversation history fetched");
     dispatch(updatePrevConversations(currentConversation));
-    console.log('Updated prevConversations');
+    console.log("Updated prevConversations");
   }, [dispatch, wsClosed, currentConversation]);
 
   // websocket connection
@@ -63,16 +69,18 @@ function Chat() {
       setWSClosed(false);
       setSocket(ws);
 
+      dispatch(addUserMessage(userInput));
+
       if (userInput.trim() !== "") {
         ws.send(
           JSON.stringify({
             query: userInput,
             chatId: currentConversationId,
             jwt: `Bearer ${token}`,
-            email: "test@test.com",
+            email: userEmail,
           })
         );
-        setUserMessages((prevMessages) => [...prevMessages, userInput]);
+        // setUserMessages((prevMessages) => [...prevMessages, userInput]);
         setUserInput("");
       }
     };
@@ -101,17 +109,18 @@ function Chat() {
 
     ws.onclose = () => {
       console.log("Current Conversation: ", currentConversation);
+      dispatch(addBotMessage(response));
       dispatch(getConversationHistory({ authToken: token }));
       dispatch(updatePrevConversations(currentConversation));
-      setResponse("");
+      // setResponse("");
       console.log("Disconnected from server");
       setSocket(null);
     };
   };
 
-  useEffect(() => {
-    console.log('Model Responses: ', aiMessages);
-  }, [aiMessages]);
+  // useEffect(() => {
+  //   console.log('Model Responses: ', aiMessages);
+  // }, [aiMessages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -121,14 +130,9 @@ function Chat() {
     <div className="flex flex-col h-screen w-full">
       {/* header */}
       <div className="h-16 mt-3 mb-2 rounded-md flex flex-row justify-center items-center text-white">
-        <img 
-          src={CapLogoWhite}
-          alt='CapLogoWhite'
-          className="h-20"
-        />
+        <img src={CapLogoWhite} alt="CapLogoWhite" className="h-20" />
 
-        <div className='divider' />
-        
+        <div className="divider" />
       </div>
 
       {/* message history */}
@@ -144,6 +148,7 @@ function Chat() {
               <MessageBubble key={`ai-${index}`} message={message.ai} />
             </>
           ))}
+
           {/* {userMessages.map((userMessage, index) => (
             <React.Fragment key={`message-${index}`}>
               <UserMessageBubble key={`user-${index}`} message={userMessage} />
@@ -155,9 +160,17 @@ function Chat() {
               )}
             </React.Fragment>
           ))} */}
-          {userInput && <UserMessageBubble message={userInput} />}
+          {/* {userInput && <UserMessageBubble message={userInput} />}
           {console.log("Response state: ", response)}
-          {response && <MessageBubble message={response} />}
+          {response && <MessageBubble message={response} />} */}
+          {console.log("User Messages: Chat.jsx 166:  ", userMessages)}
+          {userMessages.map((message, index) => (
+            <div key={`user-${index}`}>
+              <UserMessageBubble message={message}></UserMessageBubble>
+              {botMessages[index] && <MessageBubble message={botMessages[index]}></MessageBubble>}
+            </div>
+          ))}
+          {console.log("Bot Messages: Chat.jsx 173:  ", botMessages)}
           <div ref={messagesEndRef} />
         </div>
         {/* <div>{response}</div> */}
@@ -184,7 +197,7 @@ function Chat() {
           className="h-full border border-1 border-slate-300 bg-slate-200 rounded-lg w-16 flex justify-center items-center"
           onClick={connectWebSocket}
         >
-          <FaCircleArrowUp className="text-xl"/>
+          <FaCircleArrowUp className="text-xl" />
         </button>
       </div>
     </div>

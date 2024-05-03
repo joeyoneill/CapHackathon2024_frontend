@@ -11,9 +11,9 @@ function Graph() {
         // Transform the data into nodes and links
         const nodes = [], links = [];
         response.data.forEach(doc => {
-          nodes.push({ id: doc.document.id, ...doc.document });
+          nodes.push({ id: doc.document.id, level: 1, size: 15, ...doc.document });
           doc.children.forEach(child => {
-            nodes.push({ id: child.id, ...child });
+            nodes.push({ id: child.id, level: 2, size: 5, ...child });
             links.push({ source: doc.document.id, target: child.id });
           });
         });
@@ -21,8 +21,23 @@ function Graph() {
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
+
+  const getNodeColor = node => {
+    switch (node.level) {
+        case 1:
+            return 'blue';
+        case 2:
+            return 'green';
+        default:
+            return 'gray';
+        }
+  };
+
+  const getNodeSize = node => {
+    return node.size || 1;
+  };
  
-  return <ForceGraph2D graphData={graphData} />;
+  return <ForceGraph2D graphData={graphData} nodeColor={getNodeColor} nodeVal={getNodeSize}/>;
 }
  
 export default Graph;

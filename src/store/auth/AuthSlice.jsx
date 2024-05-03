@@ -60,15 +60,6 @@ export const getConversationHistory = createAsyncThunk(
     }
 );
 
-// // Action Types
-// export const UPDATE_CURRENT_CONVERSATION = 'auth/UPDATE_CURRENT_CONVERSATION';
-
-// // Action Creator
-// export const updateCurrentConversation = (conversationData) => ({
-//   type: UPDATE_CURRENT_CONVERSATION,
-//   payload: conversationData,
-// });
-
 // TODO: extraReducers for the builder cases
 export const authSlice = createSlice({
     name: 'auth',
@@ -84,7 +75,8 @@ export const authSlice = createSlice({
         },
         setCurrentConversationId(state, action) {
             state.user.currentConversationId = action.payload;
-            // state.user.currentConversation = [];
+            state.user.currentUserMessages = [];
+            state.user.currentBotMessages = [];
             console.log('Current conversaton ID: ', state.user.currentConversationId);
         },
         updatePrevConversations(state, action) {
@@ -95,6 +87,13 @@ export const authSlice = createSlice({
             state.user.email = action.payload;
             console.log('State user email: ', state.user.email);
         },
+        addUserMessage(state, action) {
+            console.log('User message being added: ', action.payload);
+            state.user.currentUserMessages.push(action.payload);
+        },
+        addBotMessage(state, action) {
+            state.user.currentBotMessages.push(action.payload);
+        }
     },
     extraReducers : (builder) => {
         // case for the authenticate pending
@@ -165,6 +164,8 @@ export const {
     setCurrentConversationId,
     updatePrevConversations,
     setUserEmail,
+    addUserMessage, 
+    addBotMessage,
 } = authSlice.actions;
 
 export default authSlice.reducer;
