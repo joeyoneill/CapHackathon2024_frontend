@@ -35,8 +35,9 @@ function NewHistorySidebar({
     // Set Splash to true
     setShowSplash(true);
 
-    // Log the UUID
-    console.log("UID: ", uuid);
+    // Clear AI & HUMAN HISTORY
+    setAiHistory([]);
+    setUserHistory([]);
   };
 
   // Chat Selection Handler
@@ -47,6 +48,9 @@ function NewHistorySidebar({
     // Set AI & HUMAN HISTORY
     setAiHistory(allHistory[index].history.ai);
     setUserHistory(allHistory[index].history.human);
+
+    // Set Splash to false
+    setShowSplash(false);
   };
 
   // used to navigate to the graph page
