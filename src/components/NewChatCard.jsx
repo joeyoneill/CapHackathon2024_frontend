@@ -5,6 +5,9 @@ import NewBottomBar from "./NewBottomBar";
 function NewChatCard({
     aiHistory,
     userHistory,
+    userInput,
+    aiResponse,
+    setUserInput,
 }) {
     return (
         <div className="flex flex-col h-[100vh] w-[80vw]">
@@ -35,7 +38,10 @@ function NewChatCard({
             
             {/* Bottom Bar */}
             <div className="mt-auto">
-                <NewBottomBar />
+                <NewBottomBar
+                    setUserInput={setUserInput}
+                    userInput={userInput}
+                />
             </div>
         </div>
     );
