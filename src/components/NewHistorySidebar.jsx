@@ -14,6 +14,8 @@ function NewHistorySidebar({
 
   setAiHistory,
   setUserHistory,
+  showSpash,
+  setShowSplash,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -29,6 +31,9 @@ function NewHistorySidebar({
 
     // Set the chat ID
     setChatId(uuid);
+
+    // Set Splash to true
+    setShowSplash(true);
 
     // Log the UUID
     console.log("UID: ", uuid);

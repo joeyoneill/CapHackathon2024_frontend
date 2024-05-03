@@ -84,6 +84,7 @@ function NewChatPage() {
     const [isIntialLoading, setIsIntialLoading] = useState(false);
     const [aiHistory, setAiHistory] = useState([]);
     const [userHistory, setUserHistory] = useState([]);
+    const [showSplash, setShowSplash] = useState(false);
 
     // Stream Vars
     const [socket, setSocket] = useState(null);
@@ -100,7 +101,7 @@ function NewChatPage() {
         // Fetchs all initial data
         const fetchData = async () => {
             // Set Splash Page to True
-            dispatch({ type: setShowSplashPage, payload: true });
+            setShowSplash(true);
             
             // Loading of Page
             setIsIntialLoading(true);
@@ -148,6 +149,7 @@ function NewChatPage() {
             console.log('Connected to Websocket...');
             setIsGenerating(true);
             setUserMsg(userInput);
+            setShowSplash(false);
             setSocket(ws);
             
             if (userInput.trim() !== '') {
@@ -228,6 +230,9 @@ function NewChatPage() {
 
                     setAiHistory={setAiHistory}
                     setUserHistory={setUserHistory}
+
+                    showSplash={showSplash}
+                    setShowSplash={setShowSplash}
                 />
             </div>
             <div>
@@ -240,6 +245,8 @@ function NewChatPage() {
                     connectWebSocket={connectWebSocket}
                     isGenerating={isGenerating}
                     userMsg={userMsg}
+                    showSplash={showSplash}
+                    setShowSplash={setShowSplash}
                 />
             </div>
         </div>

@@ -14,6 +14,8 @@ function NewChatCard({
     connectWebSocket,
     isGenerating,
     userMsg,
+    showSplash,
+    setShowSplash,
 }) {
     return (
         <div className="flex flex-col h-[100vh] w-[80vw]">
@@ -25,37 +27,45 @@ function NewChatCard({
                 {/* <div className="divider"/> */}
             </div>
 
-            {/* Chat Area */}
             <div className="overflow-auto mt-2">
-                {userHistory.map((message, index) => (
-                    <div>
-                        <div className="chat chat-end">
-                            <div className="chat-bubble bg-slate-400 max-w-4xl text-white">
-                                {message}
+            {!showSplash ? (
+            <div>
+                {/* Chat Area */}
+                <div className="">
+                    {userHistory.map((message, index) => (
+                        <div>
+                            <div className="chat chat-end">
+                                <div className="chat-bubble bg-slate-400 max-w-4xl text-white">
+                                    {message}
+                                </div>
+                            </div>
+                            <div className="chat chat-start">
+                                <div className="chat-bubble bg-capVibrantBlue max-w-4xl text-white">
+                                    {aiHistory[index]}
+                                </div>
                             </div>
                         </div>
-                        <div className="chat chat-start">
-                            <div className="chat-bubble bg-capVibrantBlue max-w-4xl text-white">
-                                {aiHistory[index]}
-                            </div>
-                        </div>
-                    </div>
-                ))}
+                    ))}
 
-                {isGenerating ? (
-                    <div>
-                        <div className="chat chat-end">
-                            <div className="chat-bubble chat-bubble-success">
-                                {userMsg}
+                    {isGenerating ? (
+                        <div>
+                            <div className="chat chat-end">
+                                <div className="chat-bubble chat-bubble-success">
+                                    {userMsg}
+                                </div>
+                            </div>
+                            <div className="chat chat-start">
+                                <div className="chat-bubble bg-capVibrantBlue text-white">
+                                    {aiResponse}
+                                </div>
                             </div>
                         </div>
-                        <div className="chat chat-start">
-                            <div className="chat-bubble bg-capVibrantBlue text-white">
-                                {aiResponse}
-                            </div>
-                        </div>
-                    </div>
-                ):null}
+                    ):null}
+                </div>
+            </div>
+            ) : (
+                <ChatSplash />
+            )}
             </div>
             
             {/* Bottom Bar */}
