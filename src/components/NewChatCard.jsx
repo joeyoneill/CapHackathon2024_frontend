@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import NewBottomBar from "./NewBottomBar";
 import ChatSplash from "./ChatSplash";
+import CapLogo from "../assets/CapLogo.png";
 
 // Main Component
 function NewChatCard({
@@ -18,22 +19,23 @@ function NewChatCard({
         <div className="flex flex-col h-[100vh] w-[80vw]">
 
             {/* Header */}
-            <div>
-                <h1 className="text-center pt-4">Capgemin.ai</h1>
-                <div className="divider"/>
+            <div className='shadow-lg transform'>
+                {/* <h1 className="text-center pt-4">Capgemin.ai</h1> */}
+                <img src={CapLogo} alt="Capgemin.ai" className="h-16 mx-auto"/>
+                {/* <div className="divider"/> */}
             </div>
 
             {/* Chat Area */}
-            <div className="overflow-auto">
+            <div className="overflow-auto mt-2">
                 {userHistory.map((message, index) => (
                     <div>
                         <div className="chat chat-end">
-                            <div className="chat-bubble chat-bubble-success">
+                            <div className="chat-bubble bg-slate-400 max-w-4xl text-white">
                                 {message}
                             </div>
                         </div>
                         <div className="chat chat-start">
-                            <div className="chat-bubble bg-capVibrantBlue text-white">
+                            <div className="chat-bubble bg-capVibrantBlue max-w-4xl text-white">
                                 {aiHistory[index]}
                             </div>
                         </div>
