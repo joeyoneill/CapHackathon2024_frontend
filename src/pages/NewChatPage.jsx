@@ -141,8 +141,8 @@ function NewChatPage() {
     ///////////////////////////////////////////////////////////////////////////////////////
     // Webosocket Connection
     const connectWebSocket = () => {
-        //const ws = new WebSocket('wss://' + apiHostUrl + '/ws');
-        const ws = new WebSocket('ws://localhost:8000/ws');
+        const ws = new WebSocket('wss://' + apiHostUrl + '/ws');
+        //const ws = new WebSocket('ws://localhost:8000/ws');
 
         ws.onopen = () => {
             console.log('Connected to Websocket...');
