@@ -1,6 +1,7 @@
 // imports
+import React, { useState, useEffect, useRef } from "react";
 import NewBottomBar from "./NewBottomBar";
-import React from "react";
+import ChatSplash from "./ChatSplash";
 
 // Main Component
 function NewChatCard({
@@ -44,8 +45,17 @@ function NewChatCard({
                     userInput={userInput}
                 />
             </div>
+          ))}
+          <div ref={messageEndRef} />
         </div>
-    );
+      )}
+
+      {/* Bottom Bar */}
+      <div className="mt-auto">
+        <NewBottomBar />
+      </div>
+    </div>
+  );
 }
 
 export default NewChatCard;
