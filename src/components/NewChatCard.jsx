@@ -16,6 +16,7 @@ function NewChatCard({
     userMsg,
     showSplash,
     setShowSplash,
+    isLaodingLock,
 }) {
     return (
         <div className="flex flex-col h-[100vh] w-[80vw]">
@@ -39,11 +40,20 @@ function NewChatCard({
                                     {message}
                                 </div>
                             </div>
-                            <div className="chat chat-start">
-                                <div className="chat-bubble bg-capVibrantBlue max-w-4xl text-white">
-                                    {aiHistory[index]}
+                            {isLaodingLock && !isGenerating ? (
+                                <div className="chat chat-start">
+                                    <div className="chat-bubble bg-capVibrantBlue max-w-4xl text-white">
+                                        {aiHistory[index]}<span className="loading loading-spinner loading-xs"></span>
+                                    </div>
                                 </div>
-                            </div>
+                            ):(
+                                <div className="chat chat-start">
+                                    <div className="chat-bubble bg-capVibrantBlue max-w-4xl text-white">
+                                        {aiHistory[index]}
+                                    </div>
+                                </div>
+                            )}
+                                
                         </div>
                     ))}
 

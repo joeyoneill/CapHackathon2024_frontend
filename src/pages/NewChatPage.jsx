@@ -3,6 +3,7 @@ import { useState, useEffect, useReducer } from "react";
 import { useSelector } from "react-redux";
 import { selectCurrentAuthToken, selectUserEmail } from "../store/auth/AuthSlice";
 import {v4 as uuidv4} from "uuid";
+import axios from "axios";
 
 // In-App Components
 import NewHistorySidebar from "../components/NewHistorySidebar";
@@ -139,12 +140,44 @@ function NewChatPage() {
     }, []);
 
     ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+    async function fetchChatHistoryUntilMatch(local_input, maxAttempts = 10, attempt = 1) {
+        await axios.get(`https://${apiHostUrl}/all_chat_history`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        })
+        .then(response => {
+            const chatHistory = response.data.chat_history;
+
+            if (chatHistory.length > 0 && chatHistory[0].history.human[0] === local_input) {
+                dispatch({ type: setAllHistory, payload: chat_history });
+            } else if (attempt < maxAttempts) {
+                // Wait for 3 seconds before making the next call
+                setTimeout(() => fetchChatHistoryUntilMatch(local_input, maxAttempts, attempt + 1), 1500);
+            } else {
+                console.log('Max attempts reached without finding a match.');
+            }
+        })
+        .catch(error => {
+            console.error('Failed to fetch chat history:', error);
+            if (attempt < maxAttempts) {
+                // Optionally retry after a delay even on error
+                setTimeout(() => fetchChatHistoryUntilMatch(local_input, maxAttempts, attempt + 1), 3000);
+            }
+        });
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////
     // Websocket Connection
     ///////////////////////////////////////////////////////////////////////////////////////
     // Webosocket Connection
     const connectWebSocket = async () => {
         const ws = new WebSocket('wss://' + apiHostUrl + '/ws');
         //const ws = new WebSocket('ws://localhost:8000/ws');
+        let json_expected = false;
+        let local_input = '';
 
         ws.onopen = () => {
             console.log('Connected to Websocket...');
@@ -155,6 +188,7 @@ function NewChatPage() {
             setSocket(ws);
             
             if (userInput.trim() !== '') {
+                local_input = userInput;
                 ws.send(
                     JSON.stringify(
                     {
@@ -170,7 +204,6 @@ function NewChatPage() {
             }
         };
 
-        let json_expected = false;
         ws.onmessage = (event) => {
             const msg = event.data;
             if (msg === '<<END>>') {
@@ -211,7 +244,8 @@ function NewChatPage() {
             }
         };
 
-        ws.onclose = () => {
+        ws.onclose = async () => {
+            await fetchChatHistoryUntilMatch(local_input);
             console.log('Disconnected from server.');
             setSocket(null);
             setUserMsg('');
@@ -252,6 +286,7 @@ function NewChatPage() {
                     userMsg={userMsg}
                     showSplash={showSplash}
                     setShowSplash={setShowSplash}
+                    isLoadingLock={isLoadingLock}
                 />
             </div>
         </div>
