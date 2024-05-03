@@ -10,6 +10,7 @@ import RegisterPage from "./pages/RegisterPage";
 
 // New Pages
 import NewChatPage from "./pages/NewChatPage";
+import NewGraphPage from "./pages/NewGraphPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
 
           {/* New Routes */}
           <Route path="/NewChat" element={<NewChatPage />} />
+          <Route path="/NewGraph" element={<NewGraphPage />} />
           
         </Routes>
       </Router>

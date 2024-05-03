@@ -1,4 +1,3 @@
-// imports
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -7,13 +6,13 @@ import { reset } from "../store/auth/AuthSlice";
 import {selectCurrentAuthToken} from "../store/auth/AuthSlice";
 
 // Main Component
-function NewHistorySidebar({
-  allHistory,
-  splashPage,
-  setChatId,
+function NewGraphSidebar({
+//   allHistory,
+//   splashPage,
+//   setChatId,
 
-  setAiHistory,
-  setUserHistory,
+//   setAiHistory,
+//   setUserHistory,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -45,8 +44,8 @@ function NewHistorySidebar({
   };
 
   // used to navigate to the graph page
-  const navigateToGraph = () => {
-    navigate("/NewGraph");
+  const navigateToChat = () => {
+    navigate("/NewChat");
   };
 
   // logs user out
@@ -104,14 +103,14 @@ function NewHistorySidebar({
   return (
     <div className="bg-slate-100 w-[20vw] h-screen p-4 flex flex-col">
       {/* New Chat Button */}
-      <div>
+      {/* <div>
         <button
           className="btn btn-info w-full text-white"
           onClick={handleNewChat}
         >
           New Chat
         </button>
-      </div>
+      </div> */}
 
       {/* <div>
         <button className="btn bg-capBlue w-full mt-2 text-white">
@@ -183,11 +182,11 @@ function NewHistorySidebar({
       </div>
 
       <div className="divider" />
-      <p className="mt-2 text-center font-semibold">Previous Conversations</p>
+      <p className="mt-2 text-center font-semibold">Documents</p>
 
       {/* Chat Selector */}
       <div className="overflow-y-auto pt-4 pb-4 flex flex-col space-y-2">
-        {allHistory.map((item, index) => (
+        {/* {allHistory.map((item, index) => (
           <div
             className="p-2 pl-4 pr-4 text-left hover:bg-slate-200 cursor-pointer rounded-md overflow-x-hidden"
             onClick={() => {
@@ -198,7 +197,7 @@ function NewHistorySidebar({
               ? item.history.human[0].substring(0, 26) + "..."
               : item.history.human[0]}
           </div>
-        ))}
+        ))} */}
       </div>
 
       <div className="divider mt-auto" />
@@ -207,9 +206,9 @@ function NewHistorySidebar({
       <div className="mt-auto">
         <button
           className="btn btn-info w-full text-white"
-          onClick={navigateToGraph}
+          onClick={navigateToChat}
         >
-          Knowledge Graphs
+          Chat
         </button>
         <button
           className="btn btn-error w-full text-white mt-2"
@@ -222,4 +221,4 @@ function NewHistorySidebar({
   );
 }
 
-export default NewHistorySidebar;
+export default NewGraphSidebar;

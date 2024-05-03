@@ -65,7 +65,6 @@ function NewChatCard({
                     isGenerating={isGenerating}
                 />
             </div>
-          <div ref={messageEndRef} />
         </div>
     )};
 
