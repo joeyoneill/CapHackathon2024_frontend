@@ -14,7 +14,7 @@ function ChatSplash() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center flex-grow">
+    <div className="flex flex-col justify-center items-center flex-grow h-full">
       <img src={capSpade} alt="spade" className="h-16 w-16 mb-2" />
       <p className="font-semibold text-xl">How can I help you today?</p>
       <div className="grid grid-cols-2 gap-4 mt-10">

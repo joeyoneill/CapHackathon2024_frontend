@@ -64,7 +64,10 @@ function NewChatCard({
                 </div>
             </div>
             ) : (
+              <div className='flex flex-col items-center justify-center h-[80vh]'>
                 <ChatSplash />
+              </ div>
+                
             )}
             </div>
             
