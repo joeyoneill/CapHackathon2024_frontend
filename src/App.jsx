@@ -8,9 +8,10 @@ import GraphPage from "./pages/GraphPage";
 import Login from "./pages/Login";
 import RegisterPage from "./pages/RegisterPage";
 
-function App() {
-  const [count, setCount] = useState(0);
+// New Pages
+import NewChatPage from "./pages/NewChatPage";
 
+function App() {
   return (
     <>
       <Router>
@@ -19,6 +20,10 @@ function App() {
           <Route path="/Chat" element={<ChatPage />} />
           <Route path="/Register" element={<RegisterPage />} />
           <Route path="/Graph" element={<GraphPage />} />
+
+          {/* New Routes */}
+          <Route path="/NewChat" element={<NewChatPage />} />
+          
         </Routes>
       </Router>
     </>

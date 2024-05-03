@@ -41,7 +41,7 @@ export default function Login() {
       if (result.payload && result.payload.status === 200) {
         setIsLoading(false);
         dispatch(setUserEmail(email));
-        navigate("/Chat");
+        navigate("/NewChat");
       } else {
         setIsLoading(false);
         setError(true);

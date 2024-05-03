@@ -2,9 +2,15 @@
 import AuthService from "./AuthService";
 import { createSlice, createAsyncThunk, createSelector } from "@reduxjs/toolkit";
 
+const initializeAuthToken = () => {
+  const storedToken = localStorage.getItem("authToken");
+  return storedToken ? { authToken: storedToken } : null;
+}
+
 const initialState = {
     user: {
-        authToken: null, 
+        // authToken: null, 
+        ...initializeAuthToken(),
         refreshToken: null, 
         isLoading: false,
         hasError: false,
@@ -25,6 +31,8 @@ export const authenticate = createAsyncThunk(
     // The payload creator receives the partial `{title, content, user}` object
     async ({ email, password}, thunkAPI) => {
         try {
+            const response = await AuthService.authenticate(email, password);
+            localStorage.setItem('authToken', response.jwt);
             return await AuthService.authenticate(email, password);
         } catch (error) {
             return thunkAPI.rejectWithValue({ error: error.message });
