@@ -47,9 +47,9 @@ function NewHistorySidebar({
                         className="p-2 pl-4 pr-4 text-left hover:bg-slate-200 cursor-pointer rounded-md overflow-x-hidden"
                         onClick={handleChatSelection}
                     >
-                        { item.history[0].human.length > 19 
-                            ? item.history[0].human.substring(0, 26) + '...'
-                            : item.history[0].human
+                        { item.history.human[0].length > 19 
+                            ? item.history.human[0].substring(0, 26) + '...'
+                            : item.history.human[0]
                         }
                     </div>
                 ))}

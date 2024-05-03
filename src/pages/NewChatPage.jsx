@@ -129,7 +129,7 @@ function NewChatPage() {
                     reducerDispatch={dispatch}
                 />
             </div>
-            <div>
+            <div className='w-4/5'>
                 <NewChatCard />
             </div>
         </div>
