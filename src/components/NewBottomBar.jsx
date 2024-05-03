@@ -1,10 +1,13 @@
 // imports
+import { connect } from "react-redux";
 import TextareaAutosize from "react-textarea-autosize";
 import { FaCircleArrowUp } from "react-icons/fa6";
 
 function NewBottomBar({
     userInput,
     setUserInput,
+    connectWebSocket,
+    isGenerating,
 }) {
     return (
         <div className="flex justify-center bg-white pt-4 pb-4">
@@ -19,10 +22,8 @@ function NewBottomBar({
 
             <button
                 className="btn btn-sm h-10 btn-outline btn-info ml-2"
-                onClick={() => {
-                    console.log('User Input:', userInput);
-                    setUserInput("");
-                }}
+                onClick={connectWebSocket}
+                disabled={isGenerating}
             >
                 <FaCircleArrowUp className='text-info'/>
             </button>
