@@ -1,12 +1,15 @@
 // imports
 import {v4 as uuidv4} from "uuid";
+import { useState } from "react";
 
 // Main Component
 function NewHistorySidebar({
     allHistory,
     splashPage,
     setChatId,
-    reducerDispatch
+
+    setAiHistory,
+    setUserHistory,
 }) {
     
     // New Chat Button Handler
@@ -24,7 +27,12 @@ function NewHistorySidebar({
 
     // Chat Selection Handler
     const handleChatSelection = (index, chat_id) => {
-        setChatId()
+        // set to the proper chat id
+        setChatId(chat_id);
+
+        // Set AI & HUMAN HISTORY
+        setAiHistory(allHistory[index].history.ai);
+        setUserHistory(allHistory[index].history.human);
     };
     
     return (
@@ -45,11 +53,11 @@ function NewHistorySidebar({
                 {allHistory.map((item, index) => (
                     <div
                         className="p-2 pl-4 pr-4 text-left hover:bg-slate-200 cursor-pointer rounded-md overflow-x-hidden"
-                        onClick={handleChatSelection}
+                        onClick={() => {handleChatSelection(index, item.id)}}
                     >
-                        { item.history[0].human.length > 19 
-                            ? item.history[0].human.substring(0, 26) + '...'
-                            : item.history[0].human
+                        { item.history.human[0].length > 19 
+                            ? item.history.human[0].substring(0, 26) + '...'
+                            : item.history.human[0]
                         }
                     </div>
                 ))}

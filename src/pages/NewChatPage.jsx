@@ -25,6 +25,7 @@ const setAllHistory = "SET_ALL_HISTORY";
 const setAiHistory = "SET_AI_HISTORY";
 const setUserHistory = "SET_USER_HISTORY";
 const setShowSplashPage = "SET_SPLASH_PAGE";
+const setChatHistory = "SET_CHAT_HISTORY";
 
 // Reducer Function to handle state updates
 function reducer(state, action) {
@@ -54,6 +55,12 @@ function reducer(state, action) {
                 ...state,
                 userHistory: action.payload
             };
+        case setChatHistory:
+            return {
+                ...state,
+                aiHistory: action.payload.ai,
+                userHistory: action.payload.user
+            };
         default:
             return state;
     }
@@ -75,6 +82,8 @@ function NewChatPage() {
     const [token, setToken] = useState(useSelector(selectCurrentAuthToken));
     const [chatId, setChatId] = useState(null);
     const [isIntialLoading, setIsIntialLoading] = useState(false);
+    const [aiHistory, setAiHistory] = useState([]);
+    const [userHistory, setUserHistory] = useState([]);
 
     // Initial Get of Variables
     useEffect(() => {
@@ -126,11 +135,16 @@ function NewChatPage() {
                     allHistory={state.allHistory}
                     splashPage={state.splashPage}
                     setChatId={setChatId}
-                    reducerDispatch={dispatch}
+
+                    setAiHistory={setAiHistory}
+                    setUserHistory={setUserHistory}
                 />
             </div>
             <div>
-                <NewChatCard />
+                <NewChatCard
+                    aiHistory={aiHistory}
+                    userHistory={userHistory}
+                />
             </div>
         </div>
     );
