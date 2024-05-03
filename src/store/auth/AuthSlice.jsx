@@ -16,18 +16,20 @@ const initializeEmail = () => {
 const initialState = {
     user: {
         // authToken: null, 
-        ...initializeAuthToken(),
+        authToken: initializeAuthToken(),
         refreshToken: null, 
         isLoading: false,
         hasError: false,
         errorMessage: null,
         currentConversationId: null,
+        currentDocumentTitle: null,
         // email: null,
-        ...initializeEmail(),
+        email: initializeEmail(),
         currentConversation: [],
         prevConversations: [],
         currentUserMessages: [],
         currentBotMessages: [],
+        documents: [],
     }
 }
 
@@ -75,6 +77,20 @@ export const getConversationHistory = createAsyncThunk(
     }
 );
 
+// calls to the services with asyncThunk get a list of all available docs
+export const getAllDocuments = createAsyncThunk(
+    // Action type string - unique for each function
+    'auth/getDocuments',
+    // The payload creator receives the partial `{title, content, user}` object
+    async ({ authToken }, thunkAPI) => {
+        try {
+            console.log('Auth Slice Get all docs token: ', authToken);
+            return await AuthService.getAllDocuments(authToken);
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error: error.message });
+        }
+    }
+);
 // TODO: extraReducers for the builder cases
 export const authSlice = createSlice({
     name: 'auth',
@@ -109,7 +125,10 @@ export const authSlice = createSlice({
         },
         addBotMessage(state, action) {
             state.user.currentBotMessages.push(action.payload);
-        }
+        },
+        setCurrentDocumentTitle(state, action) {
+            state.user.currentDocumentTitle = action.payload;
+        },
     },
     extraReducers : (builder) => {
         // case for the authenticate pending
@@ -168,6 +187,27 @@ export const authSlice = createSlice({
             state.user.hasError = true;
             state.user.errorMessage = 'Error getting conversations';
         });
+
+        // case for the getDocuments pending
+        builder.addCase(getAllDocuments.pending, (state) => {
+            state.user.isLoading = true;
+        });
+
+        // case for the getDocuments succeeding
+        builder.addCase(getAllDocuments.fulfilled, (state, action) => {
+            console.log('Documents response: ', action.payload);
+            state.user.documents = action.payload;
+            console.log('State user documents: ', state.user.documents);
+            state.user.isLoading = false;
+
+        });
+
+        // case for the getDocuments failing
+        builder.addCase(getAllDocuments.rejected, (state) => {
+            state.user.isLoading = false;
+            state.user.hasError = true;
+            state.user.errorMessage = 'Error getting documents';
+        });
     }
 })
 
@@ -182,6 +222,7 @@ export const {
     setUserEmail,
     addUserMessage, 
     addBotMessage,
+    setCurrentDocumentTitle,
 } = authSlice.actions;
 
 export default authSlice.reducer;
@@ -194,6 +235,8 @@ export const selectCurrentBotMessages = (state) => state.auth.user.currentBotMes
 export const selectCurrentConversation = (state) => state.auth.user.currentConversation;
 export const selectCurrentConversationID = (state) => state.auth.user.currentConversationId;
 export const selectUserEmail = (state) => state.auth.user.email;
+export const selectDocuments = (state) => state.auth.user.documents;
+export const selectCurrentDocumentTitle = (state) => state.auth.user.currentDocumentTitle;
 
 export const selectMessagesFromConversation = (conversationId) => 
   createSelector([selectPrevConversations], (prevConversations) => {

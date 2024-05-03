@@ -1,9 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { reset } from "../store/auth/AuthSlice";
-import {selectCurrentAuthToken} from "../store/auth/AuthSlice";
+import { selectCurrentAuthToken, selectDocuments, getAllDocuments, setCurrentDocumentTitle } from "../store/auth/AuthSlice";
+
 
 // Main Component
 function NewGraphSidebar({
@@ -17,9 +18,19 @@ function NewGraphSidebar({
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  
   const token = useSelector(selectCurrentAuthToken);
+  console.log('Graph Sidebar token: ', token);
+//   dispatch(getAllDocuments({ token }));
+  const documents = useSelector(selectDocuments);
+
+  console.log("Documents: ", documents );
 
   const [files, setFiles] = useState([]);
+
+  useEffect(() => {
+    dispatch(getAllDocuments({ authToken: token }));
+  }, [dispatch, token]);
 
   // New Chat Button Handler
   const handleNewChat = () => {
@@ -31,6 +42,11 @@ function NewGraphSidebar({
 
     // Log the UUID
     console.log("UID: ", uuid);
+  };
+
+  // sets the state current selected doc title
+  const setDocumentTitle = (title) => {
+    dispatch(setCurrentDocumentTitle(title));
   };
 
   // Chat Selection Handler
@@ -186,21 +202,18 @@ function NewGraphSidebar({
 
       {/* Chat Selector */}
       <div className="overflow-y-auto pt-4 pb-4 flex flex-col space-y-2">
-        {/* {allHistory.map((item, index) => (
-          <div
-            className="p-2 pl-4 pr-4 text-left hover:bg-slate-200 cursor-pointer rounded-md overflow-x-hidden"
-            onClick={() => {
-              handleChatSelection(index, item.id);
-            }}
+        {documents.map((doc, index) => (
+          <button
+            key={index}
+            className="btn bg-slate-400 text-white w-full"
+            onClick={() => setDocumentTitle(doc)}
           >
-            {item.history.human[0].length > 19
-              ? item.history.human[0].substring(0, 26) + "..."
-              : item.history.human[0]}
-          </div>
-        ))} */}
+            {doc}
+          </button>
+        ))}
       </div>
 
-      <div className="divider mt-auto" />
+      
 
       {/* Knowledge Graphs Button */}
       <div className="mt-auto">

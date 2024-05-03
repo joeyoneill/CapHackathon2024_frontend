@@ -91,11 +91,33 @@ const GetAllConversations = async (authToken) => {
   }
 };
 
+// get all documents method
+const getAllDocuments = async (authToken) => {
+  try {
+    console.log('GetDocuments request: ', authToken);
+
+    const response = await axios.get(
+      `${baseUrl}get_all_documents`,
+      {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+      }
+    );
+
+    console.log('Get Documents response: ', response);
+    return response.data;
+  } catch (error) {
+    console.log('GetDocuments error: ', error.response.data);
+  }
+};
+
 // export the methods
 const AuthService = {
     authenticate,
     register,
     GetAllConversations,
+    getAllDocuments,
 };
 
 export default AuthService;

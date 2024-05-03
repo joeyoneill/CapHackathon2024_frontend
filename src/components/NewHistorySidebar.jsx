@@ -201,7 +201,7 @@ function NewHistorySidebar({
       <div className="overflow-y-auto pt-4 pb-4 flex flex-col space-y-2">
         {allHistory.map((item, index) => (
           <div
-            className="p-2 pl-4 pr-4 text-left hover:bg-slate-200 cursor-pointer rounded-md overflow-x-hidden"
+            className="p-2 pl-4 pr-4 text-left hover:bg-slate-200 cursor-pointer rounded-md overflow-x-hidden text-sm font-semibold"
             onClick={() => {
               if (!isLoadingLock) {
                 handleChatSelection(index, item.id);
@@ -215,7 +215,7 @@ function NewHistorySidebar({
         ))}
       </div>
 
-      <div className="divider mt-auto" />
+
 
       {/* Knowledge Graphs Button */}
       <div className="mt-auto">

@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ForceGraph2D } from "react-force-graph";
 import { useSelector } from "react-redux";
-import { selectCurrentAuthToken } from "../store/auth/AuthSlice";
+import { selectCurrentAuthToken, selectCurrentDocumentTitle } from "../store/auth/AuthSlice";
 
 function Graph() {
   const token = useSelector(selectCurrentAuthToken);
+  const docTitle = useSelector(selectCurrentDocumentTitle);
 
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
 
@@ -13,7 +14,7 @@ function Graph() {
     axios
       .post(
         "https://columbiateam1backend.azurewebsites.net/document_graph",
-        { file_name: "2024_State_of_the_union.txt" },
+        { file_name: `${docTitle}` },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,7 +49,7 @@ function Graph() {
         setGraphData({ nodes, links });
       })
       .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  }, [docTitle]);
 
   return (
     <ForceGraph2D
