@@ -1,12 +1,20 @@
-import React from 'react'
+import React from "react";
+import capSpade from "../assets/capSpade.png";
+import GridBox from "./GridBox";
 
 function ChatSplash() {
   return (
-    <div className='h-full w-full flex flex-col justify-center items-center'>
-        <h3 className='font-semibold text-xl'>Capgemin.Ai</h3>
-        <h4 className='mt-14 font-semibold text-lg'>How can I help today?</h4>
+    <div className="flex flex-col justify-center items-center flex-grow">
+      <img src={capSpade} alt="spade" className="h-16 w-16 mb-2" />
+      <p className="font-semibold text-xl">How can I help you today?</p>
+      <div className="grid grid-cols-2 gap-4 mt-10">
+        <GridBox header="Chat With Your Data" info="Easily query your added data" />
+        <GridBox header="View Knowledge Graphs" info="Visualize your data" />
+        <GridBox header="Upload Documents" info="Securely add additional data" />
+        <GridBox header="Stored Conversations" info="Access information from past conversations" />
+      </div>
     </div>
-  )
+  );
 }
 
-export default ChatSplash
+export default ChatSplash;

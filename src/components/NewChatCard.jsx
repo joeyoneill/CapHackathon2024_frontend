@@ -1,5 +1,6 @@
 // imports
 import NewBottomBar from "./NewBottomBar";
+import React from "react";
 
 // Main Component
 function NewChatCard({
