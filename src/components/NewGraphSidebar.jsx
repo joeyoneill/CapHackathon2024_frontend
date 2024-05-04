@@ -8,12 +8,7 @@ import { selectCurrentAuthToken, selectDocuments, getAllDocuments, setCurrentDoc
 
 // Main Component
 function NewGraphSidebar({
-//   allHistory,
-//   splashPage,
-//   setChatId,
-
-//   setAiHistory,
-//   setUserHistory,
+  setIsLoadingDocs,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -29,7 +24,9 @@ function NewGraphSidebar({
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
+    setIsLoadingDocs(true);
     dispatch(getAllDocuments({ authToken: token }));
+    setIsLoadingDocs(false);
   }, [dispatch, token]);
 
   // New Chat Button Handler

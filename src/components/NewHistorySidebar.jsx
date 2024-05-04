@@ -198,7 +198,8 @@ function NewHistorySidebar({
       <p className="mt-2 text-center font-semibold">Previous Conversations</p>
 
       {/* Chat Selector */}
-      <div className="overflow-y-auto pt-4 pb-4 flex flex-col space-y-2">
+      <div className="overflow-y-auto">
+      <div className="pt-4 pb-4 flex flex-col space-y-2">
         {allHistory.map((item, index) => (
           <div
             className="p-2 pl-4 pr-4 text-left hover:bg-slate-200 cursor-pointer rounded-md overflow-x-hidden text-sm font-semibold"
@@ -213,6 +214,7 @@ function NewHistorySidebar({
               : item.history.human[0]}
           </div>
         ))}
+      </div>
       </div>
 
 

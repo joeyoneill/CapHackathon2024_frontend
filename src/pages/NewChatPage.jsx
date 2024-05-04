@@ -258,6 +258,26 @@ function NewChatPage() {
     // return JSX
     ///////////////////////////////////////////////////////////////////////////////////////
     return (
+        <div>
+        
+        {isIntialLoading ? (
+            <div className="modal modal-open">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg text-center">Loading Capgemin.AI</h3>
+                    <div className="flex justify-center py-4">
+                        <span className="loading loading-spinner text-primary"></span>
+                        <span className="loading loading-spinner text-secondary"></span>
+                        <span className="loading loading-spinner text-accent"></span>
+                        <span className="loading loading-spinner text-neutral"></span>
+                        <span className="loading loading-spinner text-info"></span>
+                        <span className="loading loading-spinner text-success"></span>
+                        <span className="loading loading-spinner text-warning"></span>
+                        <span className="loading loading-spinner text-error"></span>
+                    </div>
+                </div>
+            </div>
+        ) : null}
+
         <div className="flex">
             <div>
                 <NewHistorySidebar
@@ -289,6 +309,8 @@ function NewChatPage() {
                     isLoadingLock={isLoadingLock}
                 />
             </div>
+        </div>
+
         </div>
     );
 }

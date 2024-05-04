@@ -1,5 +1,5 @@
 # Use an official Node.js image as the base image
-FROM node:14-alpine
+FROM node:18-alpine
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -8,13 +8,10 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm i
 
 # Copy the rest of the application code to the working directory
 COPY . .
-
-# Build the Vite React app
-RUN npm run build
 
 # Expose the port the app runs on
 EXPOSE 3000
